@@ -42,12 +42,14 @@ class App:
         self.video_info_holder = tk.LabelFrame(self.root, text="Video info ")
         self.video_info_holder.grid(row=1, column=0, padx=3, pady=3)
 
+        # Author label
         self.show_title = tk.Label(self.video_info_holder, text="Author:")
         self.show_title.grid(row=0, column=0, pady=5, padx=5)
 
         self.show_title_value = tk.Label(self.video_info_holder)
         self.show_title_value.grid(row=0, column=1, pady=5, padx=5)
 
+        # Age restriction label
         self.show_age_restriction = tk.Label(
             self.video_info_holder, text="Age restriction:")
         self.show_age_restriction.grid(row=1, column=0, pady=5, padx=5)
@@ -55,6 +57,7 @@ class App:
         self.show_age_restriction_value = tk.Label(self.video_info_holder)
         self.show_age_restriction_value.grid(row=1, column=1, pady=5, padx=5)
 
+        # Channel URL label
         self.show_channel_url = tk.Label(
             self.video_info_holder, text="Channel URL:")
         self.show_channel_url.grid(row=2, column=0, pady=5, padx=5)
@@ -62,13 +65,24 @@ class App:
         self.show_channel_url_value = tk.Label(
             self.video_info_holder, text="Channel link", state="disabled")
         self.show_channel_url_value.grid(row=2, column=1, pady=5, padx=5)
+        
+        # Video length label
+        self.show_length = tk.Label(
+            self.video_info_holder, text="Length:")
+        self.show_length.grid(row=3, column=0, pady=5, padx=5)
+
+        self.show_length_value = tk.Label(
+            self.video_info_holder)
+        self.show_length_value.grid(row=3, column=1, pady=5, padx=5)
+
+
 
         self.root.mainloop()
 
     def open_link(self, address):
         webbrowser.open_new(address)
 
-    def set_info(self, author: str, age_restriction: bool, channel_url: str):
+    def set_info(self, author: str, age_restriction: bool, channel_url: str, length:float):
         # Setting author
         self.show_title_value.config(text=author)
 
@@ -80,6 +94,10 @@ class App:
         self.show_channel_url_value.bind(
             "<Button-1>", lambda x:  self.open_link(channel_url))
 
+        self.show_length_value.config(text=f"{length // 60 }min {length - ((length // 60) * 60)}sec")
+
+        # Setting lenght
+
     def get_yt_object(self):
         url_of_vid = self.get_url.get()
         try:
@@ -90,11 +108,10 @@ class App:
 
         else:
             yt_obj = pytube.YouTube(url=url_of_vid)
-            # print(dir(yt_obj))
             self.set_info(yt_obj.author, yt_obj.age_restricted,
-                          yt_obj.channel_url)
+                          yt_obj.channel_url, yt_obj.length)
+            
             print(yt_obj.description)
-            print(yt_obj.length)
             print(yt_obj.publish_date)
             print(yt_obj.title)
             print(yt_obj.video_id)
